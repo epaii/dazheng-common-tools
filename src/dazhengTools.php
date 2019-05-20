@@ -9,6 +9,7 @@
 namespace epii\dazheng\tools;
 
 use epii\server\Args;
+use epii\server\Console;
 
 class dazhengTools
 {
@@ -25,5 +26,10 @@ class dazhengTools
     public static function isBianGeng()
     {
         return in_array(Args::val("com_type"), [3, 4]);
+    }
+
+    public static function error($code, $msg)
+    {
+        Console::error($msg, null, $code);
     }
 }
