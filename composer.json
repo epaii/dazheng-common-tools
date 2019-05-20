@@ -1,0 +1,19 @@
+{
+  "name": "epii/dazheng-tools",
+  "description": "一个简单的工具类，自有项目使用",
+  "authors": [
+    {
+      "name": "MrRen Epii",
+      "email": "543169072@qq.com"
+    }
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "epii\\dazheng\\tools\\": "src/"
+    }
+  }
+}
