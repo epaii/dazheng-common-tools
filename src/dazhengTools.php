@@ -13,6 +13,20 @@ use epii\server\Console;
 
 class dazhengTools
 {
+
+    public static function success($cns)
+    {
+        $num = 0;
+        if (is_array($cns)) {
+            $num = count($cns);
+            $cns = implode(",", $cns);
+        } else if (is_string($cns)) {
+            $num = count(explode(",", $cns));
+        }
+        $data = ["num" => $num, "cns" => $cns, "code" => 0, "msg" => "成功"];
+        Console::exit(json_encode($data, JSON_UNESCAPED_UNICODE));
+    }
+
     public static function isQy()
     {
         return in_array(Args::val("com_type"), [2, 4, 6]);
@@ -141,19 +155,19 @@ class dazhengTools
     }
 
 
-    public static function getTrFromTds($tds, $line_num,callable $td_handler =null)
+    public static function getTrFromTds($tds, $line_num, callable $td_handler = null)
     {
         $out = [];
         foreach ($tds as $key => $value) {
-            $list_index =(int)($key / $line_num);
-            $index = isset($out[$list_index])?count($out[$list_index]):0;
-            $out[$list_index][$index] = $td_handler?$td_handler($index,$value):$value;
+            $list_index = (int)($key / $line_num);
+            $index = isset($out[$list_index]) ? count($out[$list_index]) : 0;
+            $out[$list_index][$index] = $td_handler ? $td_handler($index, $value) : $value;
         }
         return $out;
     }
 
 
-    public static function getTdFromTable($html, $start_trim = 0, $end_trim = 0, $strip_tags = false,$reg = "/\<td([^td]*?)\>(.*?)<\/td\>/is")
+    public static function getTdFromTable($html, $start_trim = 0, $end_trim = 0, $strip_tags = false, $reg = "/\<td([^td]*?)\>(.*?)<\/td\>/is")
     {
         // preg_match_all("/\<td([^\<]*?)\>(.*?)<\/td\>/is", $html, $match);
         preg_match_all($reg, $html, $match);
