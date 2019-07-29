@@ -183,4 +183,57 @@ class dazhengTools
         }
         return $out;
     }
+
+    public static function getByIndex($string, $index, $fenge = "fengehao")
+    {
+        if (!$string) return $string;
+        $tmp = explode($fenge, $string);
+        if (isset($tmp[$index])) {
+            return $tmp[$index];
+        }
+        return $string;
+    }
+
+    public static function getArgsForClient()
+    {
+        $args = array_merge(Args::configVal(), Args::optVal(), Args::argVal());
+        if ($dataurl = Args::optVal("data-url")) {
+            $args = array_merge($args, json_decode(file_get_contents($dataurl), true));
+            if (!$args) {
+                self::error("数据源格式错误", -22);
+            }
+        }
+
+        foreach (["username", "password", "login_userId", "login_deptId"] as $item) {
+            $args[$item] = self::getByIndex($args[$item], (!self::isQy()) ? 0 : 1);
+        }
+
+        if (isset($args["phone"])) {
+
+            if (count($arr_tmp = explode("-", $args["phone"])) == 2) {
+                $args["phone"] = $arr_tmp[0];
+                $args["company_name"] = trim($arr_tmp[1]);
+            } else {
+                $args["company_name"] = "";
+            }
+            if (isset($args["id_card_name"])) {
+                if (count($arr_tmp = explode("-", $args["id_card_name"])) == 2) {
+                    $args["id_card_name"] = $arr_tmp[0];
+                    $args["faren"] = trim($arr_tmp[1]);
+                } else if (count($arr_tmp = explode("-", $args["id_card_name"])) >= 3) {
+                    $args["id_card_name"] = $arr_tmp[0];
+                    for ($i = 1; $i < count($arr_tmp); $i = $i + 2) {
+                        $args[$arr_tmp[$i]] = $arr_tmp[$i + 1];
+                    }
+                } else {
+                    $args["faren"] = $args["id_card_name"];
+                }
+            }
+        }
+
+        return $args;
+
+    }
+
+
 }
