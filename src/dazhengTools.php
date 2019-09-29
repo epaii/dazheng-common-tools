@@ -27,25 +27,25 @@ class dazhengTools
         Console::exit(json_encode($data, JSON_UNESCAPED_UNICODE));
     }
 
-    public static function isQy()
+    public static function isQy($com_type = null)
     {
-        return in_array(Args::val("com_type"), [2, 4, 6]);
+        return in_array($com_type !== null ? $com_type : Args::val("com_type"), [2, 4, 6]);
     }
 
 
-    public static function isSheLi()
+    public static function isSheLi($com_type = null)
     {
-        return in_array(Args::val("com_type"), [1, 2]);
+        return in_array($com_type !== null ? $com_type : Args::val("com_type"), [1, 2]);
     }
 
-    public static function isBianGeng()
+    public static function isBianGeng($com_type = null)
     {
-        return in_array(Args::val("com_type"), [3, 4]);
+        return in_array($com_type !== null ? $com_type : Args::val("com_type"), [3, 4]);
     }
 
-    public static function isFaRen()
+    public static function isFaRen($user_type = null)
     {
-        return Args::val("user_type") == 1;
+        return ($user_type !== null ? $user_type : Args::val("user_type")) == 1;
     }
 
     public static function error($msg, $code)
@@ -194,6 +194,23 @@ class dazhengTools
         return $string;
     }
 
+    public static function changeUserInfo($com_type, &$username, &$password, &$login_userId, &$login_deptId)
+    {
+        $index = !self::isQy($com_type) ? 0 : 1;
+        $username = self::getByIndex($username, $index);
+        $password = self::getByIndex($password, $index);
+        $login_userId = self::getByIndex($login_userId, $index);
+        $login_deptId = self::getByIndex($login_deptId, $index);
+        self::str_replace_user_info($password, $login_userId);
+
+    }
+
+    private static function str_replace_user_info(&$password, &$login_userId)
+    {
+        $login_userId = str_replace("sangejing", "###", $login_userId);
+        $password = str_replace(["jiahao"], ["+"], $password);
+    }
+
     public static function getArgsForClient()
     {
         $args = array_merge(Args::configVal(), Args::optVal(), Args::argVal());
@@ -207,6 +224,7 @@ class dazhengTools
         foreach (["username", "password", "login_userId", "login_deptId"] as $item) {
             $args[$item] = self::getByIndex($args[$item], (!self::isQy()) ? 0 : 1);
         }
+        self::str_replace_user_info($args["password"], $args["login_userId"]);
 
         if (isset($args["phone"])) {
 
@@ -233,6 +251,17 @@ class dazhengTools
 
         return $args;
 
+    }
+
+
+    public static function md5PostData(&$post_data_array, $just_md5 = false)
+    {
+        foreach (["faren_name", "faren_idcard", "faren_phone", "weituoren_name", "weituoren_idcard", "weituoren_phone"] as $item) {
+
+            $post_data_array[$item . "_md5"] = (isset($post_data_array[$item]) && $post_data_array[$item]) ? md5($post_data_array[$item] . "#wenshi") : "";
+            if ($just_md5)
+                $post_data_array[$item] = "";
+        }
     }
 
 
