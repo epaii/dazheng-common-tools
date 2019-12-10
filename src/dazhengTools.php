@@ -211,6 +211,7 @@ class dazhengTools
         $password = str_replace(["jiahao"], ["+"], $password);
     }
 
+
     public static function getArgsForClient()
     {
         $args = array_merge(Args::configVal(), Args::optVal(), Args::argVal());
@@ -221,9 +222,7 @@ class dazhengTools
             }
         }
 
-        foreach (["username", "password", "login_userId", "login_deptId"] as $item) {
-            $args[$item] = self::getByIndex($args[$item], (!self::isQy()) ? 0 : 1);
-        }
+
         self::str_replace_user_info($args["password"], $args["login_userId"]);
 
         if (isset($args["phone"])) {
@@ -248,7 +247,14 @@ class dazhengTools
                 }
             }
         }
+        foreach (["username", "password", "login_userId", "login_deptId"] as $item) {
+            $args[$item] = self::getByIndex($args[$item], (!self::isQy()) ? 0 : 1);
+            if (isset($args['user_index'])) {
+                $args[$item] = self::getByIndex($args[$item], $args['user_index'], "!MULT!");
+            }
+            Args::setValue($item, $args[$item]);
 
+        }
         return $args;
 
     }
