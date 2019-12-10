@@ -247,6 +247,16 @@ class dazhengTools
                 }
             }
         }
+
+        if (isset($args["code"]))
+        {
+            if (count($arr_tmp = explode("--", $args["code"])) >= 3) {
+                $args["code"] = $arr_tmp[0];
+                for ($i = 1; $i < count($arr_tmp); $i = $i + 2) {
+                    $args[$arr_tmp[$i]] = $arr_tmp[$i + 1];
+                }
+            }
+        }
         if (isset($args["login_userId"]))
             foreach (["username", "password", "login_userId", "login_deptId"] as $item) {
                 $args[$item] = self::getByIndex($args[$item], (!self::isQy()) ? 0 : 1);
