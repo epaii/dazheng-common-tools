@@ -247,14 +247,15 @@ class dazhengTools
                 }
             }
         }
-        foreach (["username", "password", "login_userId", "login_deptId"] as $item) {
-            $args[$item] = self::getByIndex($args[$item], (!self::isQy()) ? 0 : 1);
-            if (isset($args['user_index'])) {
-                $args[$item] = self::getByIndex($args[$item], $args['user_index'], "!MULT!");
-            }
-            Args::setValue($item, $args[$item]);
+        if (isset($args["login_userId"]))
+            foreach (["username", "password", "login_userId", "login_deptId"] as $item) {
+                $args[$item] = self::getByIndex($args[$item], (!self::isQy()) ? 0 : 1);
+                if (isset($args['user_index'])) {
+                    $args[$item] = self::getByIndex($args[$item], $args['user_index'], "!MULT!");
+                }
+                Args::setValue($item, $args[$item]);
 
-        }
+            }
         return $args;
 
     }
