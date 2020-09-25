@@ -111,7 +111,13 @@ class dazhengTools
         $ret = array_merge($dec, array(implode("", self::cnyMapUnit(str_split($int), $cnygrees)), ""));
 
         $ret = implode("", array_reverse(self::cnyMapUnit($ret, $cnyunits)));
-        return str_replace(array_keys($cnynums), $cnynums, $ret) . (count($dec) === 0 ? "整" : "");
+        $money_big =  str_replace(array_keys($cnynums), $cnynums, $ret) . (count($dec) === 0 ? "整" : "");
+
+        if($money>=100000000&&$money<100009999){
+           
+            return str_replace("万","",$money_big);
+        }
+        return $money_big ;
     }
 
     public static function cnyMapUnit($list, $units)
